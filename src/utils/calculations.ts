@@ -12,7 +12,113 @@ const CHRISTMAS_DAY = 25;
 const NEW_YEAR_MONTH = 0;   // January (0-based)
 const NEW_YEAR_DAY = 1;
 
-// Heart rates and breathing rates remain the same...
+// Heart rates by age (beats per minute)
+const HEART_RATES = {
+  infant: { min: 100, max: 160, avg: 130 },
+  child: { min: 70, max: 120, avg: 95 },
+  teen: { min: 60, max: 100, avg: 80 },
+  adult: { min: 60, max: 100, avg: 72 }
+};
+
+// Breathing rates by age (breaths per minute)
+const BREATHING_RATES = {
+  infant: { min: 30, max: 60, avg: 45 },
+  child: { min: 20, max: 30, avg: 25 },
+  teen: { min: 12, max: 20, avg: 16 },
+  adult: { min: 12, max: 20, avg: 14 }
+};
+
+function calculateExactAge(birthDate: Date, now: Date, hasTimeZone: boolean) {
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+    let days = now.getDate() - birthDate.getDate();
+    
+    // Handle February 29th birthdays
+    const isBirthDateFeb29 = birthDate.getMonth() === 1 && birthDate.getDate() === 29;
+    if (isBirthDateFeb29 && now.getMonth() === 1 && now.getDate() === 28 && !isLeapYear(now.getFullYear())) {
+        days = 0; // Consider February 28 as their birthday in non-leap years
+    }
+
+    // Adjust for negative days
+    if (days < 0) {
+        months--;
+        const lastMonth = now.getMonth() - 1;
+        const daysInLastMonth = getDaysInMonth(now.getFullYear(), lastMonth);
+        days += daysInLastMonth;
+    }
+
+    // Adjust for negative months
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    return {
+        years,
+        months,
+        days,
+        hours: now.getHours(),
+        minutes: now.getMinutes(),
+        seconds: now.getSeconds(),
+        timeZoneAdjusted: hasTimeZone
+    };
+}
+
+function calculateVitalStats(birthDate: Date, now: Date) {
+    const diffTime = Math.abs(now.getTime() - birthDate.getTime());
+    const secondsLived = diffTime / 1000;
+    const years = now.getFullYear() - birthDate.getFullYear();
+
+    // Determine age-appropriate rates
+    let heartRates = HEART_RATES.adult;
+    let breathingRates = BREATHING_RATES.adult;
+
+    if (years < 1) {
+        heartRates = HEART_RATES.infant;
+        breathingRates = BREATHING_RATES.infant;
+    } else if (years < 12) {
+        heartRates = HEART_RATES.child;
+        breathingRates = BREATHING_RATES.child;
+    } else if (years < 18) {
+        heartRates = HEART_RATES.teen;
+        breathingRates = BREATHING_RATES.teen;
+    }
+
+    return {
+        heartbeats: {
+            estimate: Math.floor(secondsLived * (heartRates.avg / 60)),
+            range: {
+                min: Math.floor(secondsLived * (heartRates.min / 60)),
+                max: Math.floor(secondsLived * (heartRates.max / 60))
+            }
+        },
+        breaths: {
+            estimate: Math.floor(secondsLived * (breathingRates.avg / 60)),
+            range: {
+                min: Math.floor(secondsLived * (breathingRates.min / 60)),
+                max: Math.floor(secondsLived * (breathingRates.max / 60))
+            }
+        }
+    };
+}
+
+function calculateEarthJourney(birthDate: Date, now: Date) {
+    // Get exact days including leap years
+    const exactDays = getExactDaysDifference(birthDate, now);
+    
+    // Calculate precise orbits considering leap years
+    const preciseOrbits = exactDays / TROPICAL_YEAR;
+    
+    // Get the number of leap years for more accurate rotation count
+    const leapYears = countLeapYears(birthDate, now);
+    const rotations = exactDays + (leapYears * 24 / SIDEREAL_DAY);
+
+    return {
+        orbits: Math.floor(preciseOrbits),
+        rotations: Math.floor(rotations),
+        accurateOrbits: preciseOrbits.toFixed(6)
+    };
+}
 
 function calculateCelebrations(birthDate: Date, now: Date) {
     const birthYear = birthDate.getFullYear();
@@ -53,8 +159,6 @@ function calculateCelebrations(birthDate: Date, now: Date) {
         newYear: newYearCelebrations
     };
 }
-
-// Rest of the code remains the same...
 
 export function calculateLifeMetrics(birthInfo: BirthInfo): LifeMetrics {
     const now = new Date();
