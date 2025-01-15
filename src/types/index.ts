@@ -1,3 +1,15 @@
+export interface TimeZoneInfo {
+  zoneName: string;
+  offset: number;
+}
+
+export interface BirthInfo {
+  date: Date;
+  hasTimeZone: boolean;
+  timeZone?: TimeZoneInfo;
+  birthTime?: string; // In 24h format 'HH:mm'
+}
+
 export interface LifeMetrics {
   exact: {
     years: number;
@@ -6,6 +18,7 @@ export interface LifeMetrics {
     hours: number;
     minutes: number;
     seconds: number;
+    timeZoneAdjusted: boolean;
   };
   celebrations: {
     christmas: number;
@@ -14,7 +27,7 @@ export interface LifeMetrics {
   earth: {
     orbits: number;
     rotations: number;
-    accurateOrbits: string; // With precision
+    accurateOrbits: string;
   };
   body: {
     heartbeats: {
