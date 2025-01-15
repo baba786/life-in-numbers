@@ -16,32 +16,6 @@ Enter your date of birth and find out:
 - 🥪 Approximate number of meals you've eaten
 - 🚶 Estimated steps you've taken in your lifetime
 
-## 🚀 Coming Soon
-
-- Interactive web interface
-- Shareable results cards
-- Comparison with historical events
-- Fun facts about what was happening when you were born
-- Personalized life statistics and milestones
-- Mobile app version
-
-## 🛠️ Technologies (Planned)
-
-- Frontend: React.js with Tailwind CSS
-- Backend: Node.js
-- Date Calculations: date-fns or Moment.js
-- Animations: Framer Motion
-- Charts: Chart.js
-
-## 🤝 Contributing
-
-This project is in its early stages, and we'd love your help! Whether it's:
-- 💡 Suggesting new metrics to calculate
-- 🎨 Designing the user interface
-- 🧮 Improving calculation accuracy
-- 🐛 Bug fixes and improvements
-- 📝 Documentation updates
-
 ## 📝 License
 
 MIT License - feel free to use this project however you'd like!
