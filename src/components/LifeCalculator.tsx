@@ -1,13 +1,48 @@
 import { useState, useEffect } from 'react';
-import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
-import { calculateLifeMetrics } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Share2 } from 'lucide-react';
 
 export function LifeCalculator() {
   const [date, setDate] = useState<Date>();
-  const [metrics, setMetrics] = useState<ReturnType<typeof calculateLifeMetrics>>();
+  const [dateString, setDateString] = useState('');
+  const [metrics, setMetrics] = useState<any>();
   const [copied, setCopied] = useState(false);
+
+  const calculateLifeMetrics = (birthDate: Date) => {
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - birthDate.getTime());
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Calculate exact values
+    const years = Math.floor(diffDays / 365.25);
+    const months = Math.floor((diffDays % 365.25) / 30.44);
+    const days = Math.floor((diffDays % 365.25) % 30.44);
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    // Calculate celebrations
+    const christmasCelebrations = years + (birthDate.getMonth() < 11 || 
+      (birthDate.getMonth() === 11 && birthDate.getDate() <= 25) ? 1 : 0);
+    const newYearCelebrations = years + 1;
+
+    // Earth journey
+    const orbits = years;
+    const rotations = diffDays;
+
+    // Body stats (approximate)
+    const heartbeats = Math.floor(diffTime / 1000 * 1.2); // ~72 bpm
+    const breaths = Math.floor(diffTime / 1000 * 0.2); // ~12 breaths per minute
+
+    return {
+      exact: { years, months, days, hours, minutes, seconds },
+      celebrations: { christmas: christmasCelebrations, newYear: newYearCelebrations },
+      earth: { orbits, rotations },
+      body: { heartbeats, breaths }
+    };
+  };
 
   useEffect(() => {
     if (date) {
@@ -20,17 +55,18 @@ export function LifeCalculator() {
     }
   }, [date]);
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDateString(e.target.value);
+    const newDate = new Date(e.target.value);
+    if (!isNaN(newDate.getTime())) {
+      setDate(newDate);
+    }
+  };
+
   const handleShare = async () => {
     if (!metrics) return;
     
-    const text = `My Life in Numbers:
-🎂 Age: ${metrics.exact.years} years, ${metrics.exact.months} months, ${metrics.exact.days} days
-🎄 Christmas celebrations: ${metrics.celebrations.christmas}
-🎉 New Year celebrations: ${metrics.celebrations.newYear}
-🌍 Earth orbits: ${metrics.earth.orbits}
-🌎 Earth rotations: ${metrics.earth.rotations}
-💓 Heartbeats: ${metrics.body.heartbeats.toLocaleString()}
-🫁 Breaths: ${metrics.body.breaths.toLocaleString()}`;
+    const text = `My Life in Numbers:\n🎂 Age: ${metrics.exact.years} years, ${metrics.exact.months} months, ${metrics.exact.days} days\n🎄 Christmas celebrations: ${metrics.celebrations.christmas}\n🎉 New Year celebrations: ${metrics.celebrations.newYear}\n🌍 Earth orbits: ${metrics.earth.orbits}\n🌎 Earth rotations: ${metrics.earth.rotations}\n💓 Heartbeats: ${metrics.body.heartbeats.toLocaleString()}\n🫁 Breaths: ${metrics.body.breaths.toLocaleString()}`;
 
     try {
       if (navigator.share) {
@@ -49,13 +85,17 @@ export function LifeCalculator() {
     <div className="space-y-8">
       <div className="flex flex-col items-center space-y-4">
         <h2 className="text-xl font-semibold">Select your birth date</h2>
-        <Calendar
-          mode="single"
-          selected={date}
-          onSelect={setDate}
-          disabled={{ after: new Date() }}
-          className="rounded-md border"
-        />
+        <div className="w-full max-w-sm space-y-2">
+          <Label htmlFor="birthdate">Birth Date</Label>
+          <Input
+            type="date"
+            id="birthdate"
+            value={dateString}
+            onChange={handleDateChange}
+            max={new Date().toISOString().split('T')[0]}
+            className="w-full"
+          />
+        </div>
       </div>
 
       {metrics && (
