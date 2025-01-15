@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Share2, Gift, PartyPopper, Globe, Heart } from 'lucide-react';
+import { Share2, Gift, PartyPopper, Globe, Heart, Clock } from 'lucide-react';
 import type { LifeMetrics } from '@/types';
 
 type StatCardProps = {
@@ -185,7 +185,7 @@ export function LifeCalculator() {
           <div className="flex justify-center">
             <Button
               onClick={handleShare}
-              className="bg-white/10 hover:bg-white/20 text-white flex items-center space-x-2 transform transition-all duration-300 hover:scale-105"
+              className="glass text-white flex items-center space-x-2 transform transition-all duration-300 hover:scale-105"
             >
               <Share2 className="w-4 h-4" />
               <span>{copied ? 'Copied!' : 'Share your journey'}</span>
