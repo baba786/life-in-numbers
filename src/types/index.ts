@@ -14,9 +14,22 @@ export interface LifeMetrics {
   earth: {
     orbits: number;
     rotations: number;
+    accurateOrbits: string; // With precision
   };
   body: {
-    heartbeats: number;
-    breaths: number;
+    heartbeats: {
+      estimate: number;
+      range: {
+        min: number;
+        max: number;
+      };
+    };
+    breaths: {
+      estimate: number;
+      range: {
+        min: number;
+        max: number;
+      };
+    };
   };
 }
