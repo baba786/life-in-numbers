@@ -1,8 +1,8 @@
 import type { LifeMetrics } from '@/types';
 
-// Accurate constants
-const TROPICAL_YEAR = 365.242190; // Earth's orbital period
-const SIDEREAL_DAY = 23.9344696; // Earth's rotation period in hours
+// Accurate astronomical constants
+const TROPICAL_YEAR = 365.242190; // Earth's orbital period (days)
+const SIDEREAL_DAY = 86164.0905;  // Earth's rotation period (seconds)
 
 // Heart rates by age (beats per minute)
 const HEART_RATES = {
@@ -20,121 +20,105 @@ const BREATHING_RATES = {
   adult: { min: 12, max: 20, avg: 14 }
 };
 
-// Helper function to get days in month
-function getDaysInMonth(year: number, month: number): number {
-  return new Date(year, month + 1, 0).getDate();
-}
-
-// Calculate exact age components
 function calculateExactAge(birthDate: Date, now: Date) {
-  let years = now.getFullYear() - birthDate.getFullYear();
-  let months = now.getMonth() - birthDate.getMonth();
-  let days = now.getDate() - birthDate.getDate();
-  
-  // Get hours, minutes, seconds
-  let hours = now.getHours();
-  let minutes = now.getMinutes();
-  let seconds = now.getSeconds();
+    let years = now.getFullYear() - birthDate.getFullYear();
+    let months = now.getMonth() - birthDate.getMonth();
+    let days = now.getDate() - birthDate.getDate();
 
-  // Adjust days
-  if (days < 0) {
-    months--;
-    const lastMonth = now.getMonth() - 1;
-    const daysInLastMonth = getDaysInMonth(now.getFullYear(), lastMonth);
-    days += daysInLastMonth;
-  }
-
-  // Adjust months
-  if (months < 0) {
-    years--;
-    months += 12;
-  }
-
-  return { years, months, days, hours, minutes, seconds };
-}
-
-// Calculate vital statistics based on age
-function calculateVitalStats(birthDate: Date, now: Date) {
-  const diffTime = Math.abs(now.getTime() - birthDate.getTime());
-  const years = now.getFullYear() - birthDate.getFullYear();
-  const secondsLived = diffTime / 1000;
-
-  // Determine age-appropriate rates
-  let heartRates = HEART_RATES.adult;
-  let breathingRates = BREATHING_RATES.adult;
-
-  if (years < 1) {
-    heartRates = HEART_RATES.infant;
-    breathingRates = BREATHING_RATES.infant;
-  } else if (years < 12) {
-    heartRates = HEART_RATES.child;
-    breathingRates = BREATHING_RATES.child;
-  } else if (years < 18) {
-    heartRates = HEART_RATES.teen;
-    breathingRates = BREATHING_RATES.teen;
-  }
-
-  return {
-    heartbeats: {
-      estimate: Math.floor(secondsLived * (heartRates.avg / 60)),
-      range: {
-        min: Math.floor(secondsLived * (heartRates.min / 60)),
-        max: Math.floor(secondsLived * (heartRates.max / 60))
-      }
-    },
-    breaths: {
-      estimate: Math.floor(secondsLived * (breathingRates.avg / 60)),
-      range: {
-        min: Math.floor(secondsLived * (breathingRates.min / 60)),
-        max: Math.floor(secondsLived * (breathingRates.max / 60))
-      }
+    // Adjust for negative days
+    if (days < 0) {
+        months--;
+        // Get days in the previous month
+        const lastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += lastMonth.getDate();
     }
-  };
+
+    // Adjust for negative months
+    if (months < 0) {
+        years--;
+        months += 12;
+    }
+
+    return {
+        years,
+        months,
+        days,
+        hours: now.getHours(),
+        minutes: now.getMinutes(),
+        seconds: now.getSeconds()
+    };
 }
 
-// Calculate celestial metrics
-function calculateCelestialMetrics(birthDate: Date, now: Date) {
-  const diffTime = Math.abs(now.getTime() - birthDate.getTime());
-  const diffDays = diffTime / (24 * 60 * 60 * 1000);
-  
-  // Calculate precise orbits
-  const preciseOrbits = diffDays / TROPICAL_YEAR;
-  
-  // Calculate Earth rotations (accounting for precise day length)
-  const rotations = Math.floor(diffDays);
+function calculateVitalStats(birthDate: Date, now: Date) {
+    const diffTime = Math.abs(now.getTime() - birthDate.getTime());
+    const secondsLived = diffTime / 1000;
+    const years = now.getFullYear() - birthDate.getFullYear();
 
-  return {
-    orbits: Math.floor(preciseOrbits),
-    rotations,
-    accurateOrbits: preciseOrbits.toFixed(6)
-  };
+    // Determine age-appropriate rates
+    let heartRates = HEART_RATES.adult;
+    let breathingRates = BREATHING_RATES.adult;
+
+    if (years < 1) {
+        heartRates = HEART_RATES.infant;
+        breathingRates = BREATHING_RATES.infant;
+    } else if (years < 12) {
+        heartRates = HEART_RATES.child;
+        breathingRates = BREATHING_RATES.child;
+    } else if (years < 18) {
+        heartRates = HEART_RATES.teen;
+        breathingRates = BREATHING_RATES.teen;
+    }
+
+    return {
+        heartbeats: {
+            estimate: Math.floor(secondsLived * (heartRates.avg / 60)),
+            range: {
+                min: Math.floor(secondsLived * (heartRates.min / 60)),
+                max: Math.floor(secondsLived * (heartRates.max / 60))
+            }
+        },
+        breaths: {
+            estimate: Math.floor(secondsLived * (breathingRates.avg / 60)),
+            range: {
+                min: Math.floor(secondsLived * (breathingRates.min / 60)),
+                max: Math.floor(secondsLived * (breathingRates.max / 60))
+            }
+        }
+    };
 }
 
-// Main calculation function
+function calculateEarthJourney(birthDate: Date, now: Date) {
+    const diffTime = Math.abs(now.getTime() - birthDate.getTime());
+    const diffDays = diffTime / (24 * 60 * 60 * 1000);
+    
+    // Calculate precise orbits
+    const preciseOrbits = diffDays / TROPICAL_YEAR;
+    
+    // Calculate Earth rotations
+    const rotations = Math.floor(diffDays);
+
+    return {
+        orbits: Math.floor(preciseOrbits),
+        rotations,
+        accurateOrbits: preciseOrbits.toFixed(6)
+    };
+}
+
 export function calculateLifeMetrics(birthDate: Date): LifeMetrics {
-  const now = new Date();
-  
-  // Exact age calculation
-  const exact = calculateExactAge(birthDate, now);
+    const now = new Date();
+    const exact = calculateExactAge(birthDate, now);
 
-  // Calculate celebrations
-  const yearsPassed = exact.years + (exact.months > 0 || exact.days > 0 ? 1 : 0);
-  const christmasCelebrations = yearsPassed;
-  const newYearCelebrations = yearsPassed;
+    // Calculate celebrations
+    // You've experienced this year's celebration if your birthday has passed this year
+    const yearsPassed = exact.years + (exact.months > 0 || exact.days > 0 ? 1 : 0);
 
-  // Calculate vital stats
-  const bodyStats = calculateVitalStats(birthDate, now);
-
-  // Calculate Earth journey
-  const earthMetrics = calculateCelestialMetrics(birthDate, now);
-
-  return {
-    exact,
-    celebrations: {
-      christmas: christmasCelebrations,
-      newYear: newYearCelebrations
-    },
-    earth: earthMetrics,
-    body: bodyStats
-  };
+    return {
+        exact,
+        celebrations: {
+            christmas: yearsPassed,
+            newYear: yearsPassed
+        },
+        earth: calculateEarthJourney(birthDate, now),
+        body: calculateVitalStats(birthDate, now)
+    };
 }
