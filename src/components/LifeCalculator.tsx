@@ -5,14 +5,15 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Share2 } from 'lucide-react';
+import type { LifeMetrics } from '@/types';
 
 export function LifeCalculator() {
   const [date, setDate] = useState<Date>();
   const [dateString, setDateString] = useState('');
-  const [metrics, setMetrics] = useState<any>();
+  const [metrics, setMetrics] = useState<LifeMetrics>();
   const [copied, setCopied] = useState(false);
 
-  const calculateLifeMetrics = (birthDate: Date) => {
+  const calculateLifeMetrics = (birthDate: Date): LifeMetrics => {
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - birthDate.getTime());
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
