@@ -4,8 +4,29 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Share2 } from 'lucide-react';
+import { Share2, Gift, PartyPopper, Globe, Heart } from 'lucide-react';
 import type { LifeMetrics } from '@/types';
+
+type StatCardProps = {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  gradient: string;
+};
+
+const StatCard = ({ title, icon, children, gradient }: StatCardProps) => (
+  <div className={`rounded-xl p-6 ${gradient} shadow-xl transform transition-all duration-300 hover:scale-105`}>
+    <div className="flex items-center mb-4">
+      <div className="p-2 bg-white/10 rounded-lg mr-3">
+        {icon}
+      </div>
+      <h3 className="text-lg font-bold">{title}</h3>
+    </div>
+    <div className="text-white/90">
+      {children}
+    </div>
+  </div>
+);
 
 export function LifeCalculator() {
   const [date, setDate] = useState<Date>();
@@ -85,69 +106,89 @@ export function LifeCalculator() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col items-center space-y-4">
-        <h2 className="text-xl font-semibold">Select your birth date</h2>
-        <div className="w-full max-w-sm space-y-2">
-          <Label htmlFor="birthdate">Birth Date</Label>
-          <Input
-            type="date"
-            id="birthdate"
-            value={dateString}
-            onChange={handleDateChange}
-            max={new Date().toISOString().split('T')[0]}
-            className="w-full"
-          />
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div className="bg-gradient-to-r from-purple-900 to-blue-900 rounded-2xl p-8 shadow-xl">
+        <div className="max-w-md mx-auto space-y-4">
+          <h2 className="text-2xl font-bold text-center text-white mb-6">
+            When did your journey begin?
+          </h2>
+          <div className="space-y-2">
+            <Label htmlFor="birthdate" className="text-white/90">
+              Select your birth date
+            </Label>
+            <Input
+              type="date"
+              id="birthdate"
+              value={dateString}
+              onChange={handleDateChange}
+              max={new Date().toISOString().split('T')[0]}
+              className="w-full bg-white/10 border-white/20 text-white"
+            />
+          </div>
         </div>
       </div>
 
       {metrics && (
-        <div className="space-y-6">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg border p-4">
-              <h3 className="text-lg font-semibold mb-2">Exact Age</h3>
-              <p className="text-sm">
-                {metrics.exact.years} years, {metrics.exact.months} months,{' '}
-                {metrics.exact.days} days, {metrics.exact.hours} hours,{' '}
-                {metrics.exact.minutes} minutes, {metrics.exact.seconds} seconds
+        <div className="space-y-8 animate-fade-in">
+          <div className="grid gap-6 md:grid-cols-2">
+            <StatCard
+              title="Exact Age"
+              icon={<Clock className="w-6 h-6 text-white" />}
+              gradient="bg-gradient-to-br from-blue-600 to-blue-800"
+            >
+              <p className="text-lg">
+                {metrics.exact.years} years, {metrics.exact.months} months,
+                {' '}{metrics.exact.days} days
               </p>
-            </div>
+              <p className="text-sm opacity-75">
+                {metrics.exact.hours}h {metrics.exact.minutes}m {metrics.exact.seconds}s
+              </p>
+            </StatCard>
 
-            <div className="rounded-lg border p-4">
-              <h3 className="text-lg font-semibold mb-2">Celebrations</h3>
-              <p className="text-sm">
+            <StatCard
+              title="Celebrations"
+              icon={<Gift className="w-6 h-6 text-white" />}
+              gradient="bg-gradient-to-br from-pink-600 to-purple-800"
+            >
+              <p>
                 🎄 {metrics.celebrations.christmas} Christmas celebrations
                 <br />
                 🎉 {metrics.celebrations.newYear} New Year celebrations
               </p>
-            </div>
+            </StatCard>
 
-            <div className="rounded-lg border p-4">
-              <h3 className="text-lg font-semibold mb-2">Earth Journey</h3>
-              <p className="text-sm">
+            <StatCard
+              title="Earth Journey"
+              icon={<Globe className="w-6 h-6 text-white" />}
+              gradient="bg-gradient-to-br from-green-600 to-emerald-800"
+            >
+              <p>
                 🌍 {metrics.earth.orbits} orbits around the Sun
                 <br />
-                🌎 {metrics.earth.rotations} Earth rotations
+                🌎 {metrics.earth.rotations.toLocaleString()} Earth rotations
               </p>
-            </div>
+            </StatCard>
 
-            <div className="rounded-lg border p-4">
-              <h3 className="text-lg font-semibold mb-2">Body Stats</h3>
-              <p className="text-sm">
+            <StatCard
+              title="Body Stats"
+              icon={<Heart className="w-6 h-6 text-white" />}
+              gradient="bg-gradient-to-br from-red-600 to-rose-800"
+            >
+              <p>
                 💓 {metrics.body.heartbeats.toLocaleString()} heartbeats
                 <br />
                 🫁 {metrics.body.breaths.toLocaleString()} breaths
               </p>
-            </div>
+            </StatCard>
           </div>
 
           <div className="flex justify-center">
             <Button
               onClick={handleShare}
-              className="flex items-center space-x-2"
+              className="bg-white/10 hover:bg-white/20 text-white flex items-center space-x-2 transform transition-all duration-300 hover:scale-105"
             >
               <Share2 className="w-4 h-4" />
-              <span>{copied ? 'Copied!' : 'Share'}</span>
+              <span>{copied ? 'Copied!' : 'Share your journey'}</span>
             </Button>
           </div>
         </div>
