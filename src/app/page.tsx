@@ -1,4 +1,4 @@
-import { BirthDateInput } from '@/components/BirthDateInput';
+import { LifeCalculator } from '@/components/LifeCalculator';
 
 export default function Home() {
   return (
@@ -12,16 +12,7 @@ export default function Home() {
             Discover fascinating statistics about your life journey, from heartbeats to cosmic travels
           </p>
         </div>
-        <div className="space-y-6">
-          <div className="bg-gradient-to-r from-purple-900 to-blue-900 rounded-xl p-6 shadow-xl">
-            <div className="space-y-4">
-              <h2 className="text-xl sm:text-2xl font-bold text-center text-white mb-6">
-                When did your journey begin?
-              </h2>
-              <BirthDateInput onBirthInfoChange={() => {}} />
-            </div>
-          </div>
-        </div>
+        <LifeCalculator />
       </div>
     </main>
   );
