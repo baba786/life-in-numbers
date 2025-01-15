@@ -1,3 +1,5 @@
+import { BirthDateInput } from '@/components/BirthDateInput';
+
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white px-4 py-8 sm:px-6 lg:px-8">
@@ -16,7 +18,7 @@ export default function Home() {
               <h2 className="text-xl sm:text-2xl font-bold text-center text-white mb-6">
                 When did your journey begin?
               </h2>
-              <BirthDateInput />
+              <BirthDateInput onBirthInfoChange={() => {}} />
             </div>
           </div>
         </div>
