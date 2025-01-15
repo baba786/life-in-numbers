@@ -2,11 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Share2, Gift, PartyPopper, Globe, Heart, Clock } from 'lucide-react';
-import type { LifeMetrics } from '@/types';
+import type { LifeMetrics, BirthInfo } from '@/types';
 import { calculateLifeMetrics } from '@/utils/calculations';
+import { BirthDateInput } from './BirthDateInput';
 
 type StatCardProps = {
   title: string;
@@ -30,28 +29,23 @@ const StatCard = ({ title, icon, children, gradient }: StatCardProps) => (
 );
 
 export function LifeCalculator() {
-  const [date, setDate] = useState<Date>();
-  const [dateString, setDateString] = useState('');
+  const [birthInfo, setBirthInfo] = useState<BirthInfo>();
   const [metrics, setMetrics] = useState<LifeMetrics>();
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (date) {
+    if (birthInfo) {
       const updateMetrics = () => {
-        setMetrics(calculateLifeMetrics(date));
+        setMetrics(calculateLifeMetrics(birthInfo));
       };
       updateMetrics();
       const interval = setInterval(updateMetrics, 1000);
       return () => clearInterval(interval);
     }
-  }, [date]);
+  }, [birthInfo]);
 
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDateString(e.target.value);
-    const newDate = new Date(e.target.value);
-    if (!isNaN(newDate.getTime())) {
-      setDate(newDate);
-    }
+  const handleBirthInfoChange = (info: BirthInfo) => {
+    setBirthInfo(info);
   };
 
   const handleShare = async () => {
@@ -79,19 +73,7 @@ export function LifeCalculator() {
           <h2 className="text-2xl font-bold text-center text-white mb-6">
             When did your journey begin?
           </h2>
-          <div className="space-y-2">
-            <Label htmlFor="birthdate" className="text-white/90">
-              Select your birth date
-            </Label>
-            <Input
-              type="date"
-              id="birthdate"
-              value={dateString}
-              onChange={handleDateChange}
-              max={new Date().toISOString().split('T')[0]}
-              className="w-full bg-white/10 border-white/20 text-white"
-            />
-          </div>
+          <BirthDateInput onBirthInfoChange={handleBirthInfoChange} />
         </div>
       </div>
 
@@ -109,6 +91,7 @@ export function LifeCalculator() {
               </p>
               <p className="text-sm opacity-75">
                 {metrics.exact.hours}h {metrics.exact.minutes}m {metrics.exact.seconds}s
+                {metrics.exact.timeZoneAdjusted && ' (timezone adjusted)'}
               </p>
             </StatCard>
 
@@ -159,7 +142,7 @@ export function LifeCalculator() {
               <p>
                 🎄 {metrics.celebrations.christmas} Christmas celebrations
                 <br />
-                🎊 {metrics.celebrations.newYear} New Year celebrations
+                🎉 {metrics.celebrations.newYear} New Year celebrations
               </p>
             </StatCard>
           </div>
