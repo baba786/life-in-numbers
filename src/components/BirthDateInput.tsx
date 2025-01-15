@@ -65,30 +65,32 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="birthdate" className="text-white">Birth Date</Label>
+        <Label htmlFor="birthdate" className="text-white text-base sm:text-lg block mb-2">
+          Birth Date
+        </Label>
         <Input
           type="date"
           id="birthdate"
           value={dateString}
           onChange={handleDateChange}
           max={new Date().toISOString().split('T')[0]}
-          className="w-full bg-white/10 text-white placeholder:text-white/70 border-white/20"
+          className="w-full bg-white/10 text-white placeholder:text-white/70 border-white/20 h-12 sm:h-10 text-lg sm:text-base rounded-xl"
         />
       </div>
 
       <Button
         variant="ghost"
-        className="w-full text-sm text-white hover:text-white/80 hover:bg-white/10"
+        className="w-full text-white hover:text-white/80 hover:bg-white/10 rounded-xl py-3 text-base"
         onClick={() => setShowAdvanced(!showAdvanced)}
       >
         {showAdvanced ? (
           <>
-            <ChevronUp className="w-4 h-4 mr-2" />
+            <ChevronUp className="w-5 h-5 mr-2" />
             Hide Advanced Options
           </>
         ) : (
           <>
-            <ChevronDown className="w-4 h-4 mr-2" />
+            <ChevronDown className="w-5 h-5 mr-2" />
             Show Advanced Options (Time & Time Zone)
           </>
         )}
@@ -97,8 +99,8 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
       {showAdvanced && (
         <div className="space-y-4 animate-fade-in">
           <div className="space-y-2">
-            <Label htmlFor="birthtime" className="text-white flex items-center">
-              <Clock className="w-4 h-4 mr-2" />
+            <Label htmlFor="birthtime" className="text-white text-base sm:text-lg flex items-center">
+              <Clock className="w-5 h-5 mr-2" />
               Birth Time (optional)
             </Label>
             <Input
@@ -106,17 +108,19 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
               id="birthtime"
               value={timeString}
               onChange={handleTimeChange}
-              className="w-full bg-white/10 text-white border-white/20"
+              className="w-full bg-white/10 text-white border-white/20 h-12 sm:h-10 text-lg sm:text-base rounded-xl"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="timezone" className="text-white">Time Zone (optional)</Label>
+            <Label htmlFor="timezone" className="text-white text-base sm:text-lg">
+              Time Zone (optional)
+            </Label>
             <select
               id="timezone"
               value={timeZone}
               onChange={handleTimeZoneChange}
-              className="w-full h-10 px-3 rounded-md border bg-white/10 text-white border-white/20"
+              className="w-full h-12 sm:h-10 px-4 rounded-xl border bg-white/10 text-white border-white/20 text-lg sm:text-base"
             >
               <option value="" className="bg-gray-900">Select Time Zone</option>
               {timeZones.map((tz) => (
@@ -128,7 +132,7 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
           </div>
 
           {dateString && timeString && !timeZone && (
-            <p className="text-sm text-yellow-500">
+            <p className="text-sm sm:text-base text-yellow-500 bg-yellow-500/10 p-3 rounded-lg">
               ⚠️ Without a time zone, calculations will use your current local time zone
             </p>
           )}
