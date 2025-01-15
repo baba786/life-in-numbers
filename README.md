@@ -1,6 +1,6 @@
 # 🎂 Life in Numbers
 
-Ever wondered how many heartbeats you've had since birth? Or how many times you've orbited the sun? Welcome to **Life in Numbers** - a fun calculator that turns your birthdate into an amazing journey through time!
+Ever wondered how many heartbeats you've had since birth? Or how many times you've orbited the sun? Welcome to **Life in Numbers** - a fun calculator that turns your birthdate into an amazing journey through time
 
 ## 🌟 What Will You Discover?
 
