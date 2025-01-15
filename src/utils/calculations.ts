@@ -1,5 +1,6 @@
-import type { LifeMetrics } from '@/types';
+import type { LifeMetrics, BirthInfo } from '@/types';
 import { isLeapYear, getDaysInMonth, countLeapYears, getNextBirthday, getExactDaysDifference } from './leapYear';
+import { adjustForTimeZone } from './timezone';
 
 // Accurate astronomical constants
 const TROPICAL_YEAR = 365.242190; // Earth's orbital period (days)
@@ -21,7 +22,7 @@ const BREATHING_RATES = {
   adult: { min: 12, max: 20, avg: 14 }
 };
 
-function calculateExactAge(birthDate: Date, now: Date) {
+function calculateExactAge(birthDate: Date, now: Date, hasTimeZone: boolean) {
     let years = now.getFullYear() - birthDate.getFullYear();
     let months = now.getMonth() - birthDate.getMonth();
     let days = now.getDate() - birthDate.getDate();
@@ -44,10 +45,6 @@ function calculateExactAge(birthDate: Date, now: Date) {
         months += 12;
     }
 
-    // Special handling for leap year birthdays
-    const nextBday = getNextBirthday(birthDate, now);
-    const daysToNextBday = Math.ceil((nextBday.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-
     return {
         years,
         months,
@@ -55,8 +52,7 @@ function calculateExactAge(birthDate: Date, now: Date) {
         hours: now.getHours(),
         minutes: now.getMinutes(),
         seconds: now.getSeconds(),
-        isLeapYearBirthday: isBirthDateFeb29,
-        daysToNextBirthday: daysToNextBday
+        timeZoneAdjusted: hasTimeZone
     };
 }
 
@@ -116,9 +112,10 @@ function calculateEarthJourney(birthDate: Date, now: Date) {
     };
 }
 
-export function calculateLifeMetrics(birthDate: Date): LifeMetrics {
+export function calculateLifeMetrics(birthInfo: BirthInfo): LifeMetrics {
     const now = new Date();
-    const exact = calculateExactAge(birthDate, now);
+    const adjustedBirthDate = adjustForTimeZone(birthInfo);
+    const exact = calculateExactAge(adjustedBirthDate, now, birthInfo.hasTimeZone);
 
     // Calculate celebrations
     // For leap year birthdays, count celebrations on Feb 28 in non-leap years
@@ -130,7 +127,7 @@ export function calculateLifeMetrics(birthDate: Date): LifeMetrics {
             christmas: yearsPassed,
             newYear: yearsPassed
         },
-        earth: calculateEarthJourney(birthDate, now),
-        body: calculateVitalStats(birthDate, now)
+        earth: calculateEarthJourney(adjustedBirthDate, now),
+        body: calculateVitalStats(adjustedBirthDate, now)
     };
 }
