@@ -65,20 +65,20 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="birthdate">Birth Date</Label>
+        <Label htmlFor="birthdate" className="text-white">Birth Date</Label>
         <Input
           type="date"
           id="birthdate"
           value={dateString}
           onChange={handleDateChange}
           max={new Date().toISOString().split('T')[0]}
-          className="w-full"
+          className="w-full bg-white/10 text-white placeholder:text-white/70 border-white/20"
         />
       </div>
 
       <Button
         variant="ghost"
-        className="w-full text-sm"
+        className="w-full text-sm text-white hover:text-white/80 hover:bg-white/10"
         onClick={() => setShowAdvanced(!showAdvanced)}
       >
         {showAdvanced ? (
@@ -97,7 +97,7 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
       {showAdvanced && (
         <div className="space-y-4 animate-fade-in">
           <div className="space-y-2">
-            <Label htmlFor="birthtime" className="flex items-center">
+            <Label htmlFor="birthtime" className="text-white flex items-center">
               <Clock className="w-4 h-4 mr-2" />
               Birth Time (optional)
             </Label>
@@ -106,21 +106,21 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
               id="birthtime"
               value={timeString}
               onChange={handleTimeChange}
-              className="w-full"
+              className="w-full bg-white/10 text-white border-white/20"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="timezone">Time Zone (optional)</Label>
+            <Label htmlFor="timezone" className="text-white">Time Zone (optional)</Label>
             <select
               id="timezone"
               value={timeZone}
               onChange={handleTimeZoneChange}
-              className="w-full h-10 px-3 rounded-md border bg-background"
+              className="w-full h-10 px-3 rounded-md border bg-white/10 text-white border-white/20"
             >
-              <option value="">Select Time Zone</option>
+              <option value="" className="bg-gray-900">Select Time Zone</option>
               {timeZones.map((tz) => (
-                <option key={tz} value={tz}>
+                <option key={tz} value={tz} className="bg-gray-900">
                   {tz.replace(/_/g, ' ')}
                 </option>
               ))}
