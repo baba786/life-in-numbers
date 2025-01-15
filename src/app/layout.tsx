@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Life in Numbers',
-  description: 'Calculate and visualize various time-based metrics of your life',
+  description: 'Calculate your life statistics based on your birth date',
 };
 
 export default function RootLayout({
