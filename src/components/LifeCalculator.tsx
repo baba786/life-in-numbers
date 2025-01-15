@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Share2, Gift, PartyPopper, Globe, Heart, Clock } from 'lucide-react';
 import type { LifeMetrics } from '@/types';
+import { calculateLifeMetrics } from '@/utils/calculations';
 
 type StatCardProps = {
   title: string;
@@ -34,40 +35,6 @@ export function LifeCalculator() {
   const [metrics, setMetrics] = useState<LifeMetrics>();
   const [copied, setCopied] = useState(false);
 
-  const calculateLifeMetrics = (birthDate: Date): LifeMetrics => {
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - birthDate.getTime());
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
-    // Calculate exact values
-    const years = Math.floor(diffDays / 365.25);
-    const months = Math.floor((diffDays % 365.25) / 30.44);
-    const days = Math.floor((diffDays % 365.25) % 30.44);
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
-
-    // Calculate celebrations
-    const christmasCelebrations = years + (birthDate.getMonth() < 11 || 
-      (birthDate.getMonth() === 11 && birthDate.getDate() <= 25) ? 1 : 0);
-    const newYearCelebrations = years + 1;
-
-    // Earth journey
-    const orbits = years;
-    const rotations = diffDays;
-
-    // Body stats (approximate)
-    const heartbeats = Math.floor(diffTime / 1000 * 1.2); // ~72 bpm
-    const breaths = Math.floor(diffTime / 1000 * 0.2); // ~12 breaths per minute
-
-    return {
-      exact: { years, months, days, hours, minutes, seconds },
-      celebrations: { christmas: christmasCelebrations, newYear: newYearCelebrations },
-      earth: { orbits, rotations },
-      body: { heartbeats, breaths }
-    };
-  };
-
   useEffect(() => {
     if (date) {
       const updateMetrics = () => {
@@ -90,7 +57,7 @@ export function LifeCalculator() {
   const handleShare = async () => {
     if (!metrics) return;
     
-    const text = `My Life in Numbers:\n🎂 Age: ${metrics.exact.years} years, ${metrics.exact.months} months, ${metrics.exact.days} days\n🎄 Christmas celebrations: ${metrics.celebrations.christmas}\n🎉 New Year celebrations: ${metrics.celebrations.newYear}\n🌍 Earth orbits: ${metrics.earth.orbits}\n🌎 Earth rotations: ${metrics.earth.rotations}\n💓 Heartbeats: ${metrics.body.heartbeats.toLocaleString()}\n🫁 Breaths: ${metrics.body.breaths.toLocaleString()}`;
+    const text = `My Life in Numbers:\n\n🎂 Age: ${metrics.exact.years} years, ${metrics.exact.months} months, ${metrics.exact.days} days\n\n🌍 Earth Journey:\n• ${metrics.earth.accurateOrbits} orbits around the Sun\n• ${metrics.earth.rotations.toLocaleString()} Earth rotations\n\n❤️ Vital Statistics:\n• Heartbeats: ${metrics.body.heartbeats.estimate.toLocaleString()} (range: ${metrics.body.heartbeats.range.min.toLocaleString()} - ${metrics.body.heartbeats.range.max.toLocaleString()})\n• Breaths: ${metrics.body.breaths.estimate.toLocaleString()} (range: ${metrics.body.breaths.range.min.toLocaleString()} - ${metrics.body.breaths.range.max.toLocaleString()})\n\n🎊 Celebrations:\n• ${metrics.celebrations.christmas} Christmas celebrations\n• ${metrics.celebrations.newYear} New Year celebrations`;
 
     try {
       if (navigator.share) {
@@ -146,6 +113,45 @@ export function LifeCalculator() {
             </StatCard>
 
             <StatCard
+              title="Earth Journey"
+              icon={<Globe className="w-6 h-6 text-white" />}
+              gradient="bg-gradient-to-br from-green-600 to-emerald-800"
+            >
+              <p>
+                {metrics.earth.accurateOrbits} orbits around the Sun
+                <br />
+                {metrics.earth.rotations.toLocaleString()} Earth rotations
+              </p>
+            </StatCard>
+
+            <StatCard
+              title="Vital Statistics"
+              icon={<Heart className="w-6 h-6 text-white" />}
+              gradient="bg-gradient-to-br from-red-600 to-rose-800"
+            >
+              <div className="space-y-2">
+                <div>
+                  <p className="font-semibold">Heartbeats:</p>
+                  <p className="text-sm">
+                    {metrics.body.heartbeats.estimate.toLocaleString()}
+                    <span className="text-xs block opacity-75">
+                      Range: {metrics.body.heartbeats.range.min.toLocaleString()} - {metrics.body.heartbeats.range.max.toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+                <div>
+                  <p className="font-semibold">Breaths:</p>
+                  <p className="text-sm">
+                    {metrics.body.breaths.estimate.toLocaleString()}
+                    <span className="text-xs block opacity-75">
+                      Range: {metrics.body.breaths.range.min.toLocaleString()} - {metrics.body.breaths.range.max.toLocaleString()}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </StatCard>
+
+            <StatCard
               title="Celebrations"
               icon={<Gift className="w-6 h-6 text-white" />}
               gradient="bg-gradient-to-br from-pink-600 to-purple-800"
@@ -153,31 +159,7 @@ export function LifeCalculator() {
               <p>
                 🎄 {metrics.celebrations.christmas} Christmas celebrations
                 <br />
-                🎉 {metrics.celebrations.newYear} New Year celebrations
-              </p>
-            </StatCard>
-
-            <StatCard
-              title="Earth Journey"
-              icon={<Globe className="w-6 h-6 text-white" />}
-              gradient="bg-gradient-to-br from-green-600 to-emerald-800"
-            >
-              <p>
-                🌍 {metrics.earth.orbits} orbits around the Sun
-                <br />
-                🌎 {metrics.earth.rotations.toLocaleString()} Earth rotations
-              </p>
-            </StatCard>
-
-            <StatCard
-              title="Body Stats"
-              icon={<Heart className="w-6 h-6 text-white" />}
-              gradient="bg-gradient-to-br from-red-600 to-rose-800"
-            >
-              <p>
-                💓 {metrics.body.heartbeats.toLocaleString()} heartbeats
-                <br />
-                🫁 {metrics.body.breaths.toLocaleString()} breaths
+                🎊 {metrics.celebrations.newYear} New Year celebrations
               </p>
             </StatCard>
           </div>
