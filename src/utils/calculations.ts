@@ -64,24 +64,42 @@ function calculateExactAge(birthDate: Date, now: Date, hasTimeZone: boolean) {
     };
 }
 
-function calculateVitalStats(birthDate: Date, now: Date) {
+function calculateVitalStats(birthDate: Date, now: Date, personalSettings?: any) {
     const diffTime = Math.abs(now.getTime() - birthDate.getTime());
     const secondsLived = diffTime / 1000;
     const years = now.getFullYear() - birthDate.getFullYear();
 
-    // Determine age-appropriate rates
+    // Determine age-appropriate rates or use personal settings
     let heartRates = HEART_RATES.adult;
     let breathingRates = BREATHING_RATES.adult;
 
-    if (years < 1) {
-        heartRates = HEART_RATES.infant;
-        breathingRates = BREATHING_RATES.infant;
-    } else if (years < 12) {
-        heartRates = HEART_RATES.child;
-        breathingRates = BREATHING_RATES.child;
-    } else if (years < 18) {
-        heartRates = HEART_RATES.teen;
-        breathingRates = BREATHING_RATES.teen;
+    if (personalSettings?.heartRate) {
+        const variance = 10; // Allow for 10% variance
+        heartRates = {
+            avg: personalSettings.heartRate,
+            min: Math.floor(personalSettings.heartRate * (1 - variance/100)),
+            max: Math.ceil(personalSettings.heartRate * (1 + variance/100))
+        };
+    } else {
+        if (years < 1) {
+            heartRates = HEART_RATES.infant;
+            breathingRates = BREATHING_RATES.infant;
+        } else if (years < 12) {
+            heartRates = HEART_RATES.child;
+            breathingRates = BREATHING_RATES.child;
+        } else if (years < 18) {
+            heartRates = HEART_RATES.teen;
+            breathingRates = BREATHING_RATES.teen;
+        }
+    }
+
+    if (personalSettings?.breathingRate) {
+        const variance = 10; // Allow for 10% variance
+        breathingRates = {
+            avg: personalSettings.breathingRate,
+            min: Math.floor(personalSettings.breathingRate * (1 - variance/100)),
+            max: Math.ceil(personalSettings.breathingRate * (1 + variance/100))
+        };
     }
 
     return {
@@ -160,7 +178,7 @@ function calculateCelebrations(birthDate: Date, now: Date) {
     };
 }
 
-export function calculateLifeMetrics(birthInfo: BirthInfo): LifeMetrics {
+export function calculateLifeMetrics(birthInfo: BirthInfo, personalSettings?: any): LifeMetrics {
     const now = new Date();
     const adjustedBirthDate = adjustForTimeZone(birthInfo);
     const exact = calculateExactAge(adjustedBirthDate, now, birthInfo.hasTimeZone);
@@ -169,6 +187,6 @@ export function calculateLifeMetrics(birthInfo: BirthInfo): LifeMetrics {
         exact,
         celebrations: calculateCelebrations(adjustedBirthDate, now),
         earth: calculateEarthJourney(adjustedBirthDate, now),
-        body: calculateVitalStats(adjustedBirthDate, now)
+        body: calculateVitalStats(adjustedBirthDate, now, personalSettings)
     };
 }

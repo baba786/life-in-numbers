@@ -1,0 +1,82 @@
+/* High Contrast Mode */
+:root.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --primary: #ffff00;
+  --secondary: #00ffff;
+  --accent: #ff00ff;
+}
+
+.high-contrast body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.high-contrast button {
+  background-color: var(--primary);
+  color: var(--background);
+  border: 2px solid var(--foreground);
+}
+
+.high-contrast a {
+  color: var(--secondary);
+}
+
+/* Large Text Mode */
+:root.large-text {
+  font-size: 120%;
+}
+
+.large-text h1 {
+  font-size: 2.5em;
+}
+
+.large-text h2 {
+  font-size: 2em;
+}
+
+.large-text p {
+  font-size: 1.2em;
+  line-height: 1.6;
+}
+
+.large-text button {
+  font-size: 1.2em;
+  padding: 0.8em 1.6em;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  :root.reduced-motion * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.reduced-motion .animate-fade-in {
+  animation: none !important;
+  opacity: 1 !important;
+}
+
+/* Screen Reader Optimizations */
+:root.screen-reader .sr-only {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  clip: auto !important;
+  white-space: normal !important;
+  border: 0 !important;
+}
+
+.screen-reader [aria-hidden="true"] {
+  display: none !important;
+}
+
+/* Focus Indicators */
+:root.screen-reader *:focus {
+  outline: 3px solid var(--primary) !important;
+  outline-offset: 2px !important;
+}
