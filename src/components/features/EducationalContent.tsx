@@ -9,7 +9,7 @@ interface Fact {
   source?: string;
 }
 
-const facts: Record<string, Fact[]> = {
+const facts = {
   heartbeat: [
     {
       title: 'Heart Rate Variability',
@@ -46,7 +46,7 @@ const facts: Record<string, Fact[]> = {
       source: 'Space.com',
     },
   ],
-];
+} as const;
 
 export function EducationalContent() {
   return (
