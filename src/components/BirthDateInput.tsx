@@ -66,24 +66,51 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
         <Label htmlFor="birthdate" className="text-white text-base sm:text-lg block mb-2">
           Birth Date
         </Label>
-        <Input
-          type="date"
-          id="birthdate"
-          value={dateString}
-          onChange={handleDateChange}
-          max={new Date().toISOString().split('T')[0]}
-          className="w-full bg-white/10 text-white placeholder:text-white/70 border-white/20 h-[44px] rounded-xl px-4 
-            [color-scheme:dark] 
-            focus:ring-white/30 focus:border-white/30
-            [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert
-            [&::-webkit-datetime-edit-fields-wrapper]:p-0
-            [&::-webkit-date-and-time-value]:text-white"
-          aria-label="Birth Date"
-          aria-describedby="birthdate-description"
-          aria-required="true"
-          inputMode="numeric"
-          pattern="\d{4}-\d{2}-\d{2}"
-        />
+        <div className="relative">
+          <Input
+            type="date"
+            id="birthdate"
+            value={dateString}
+            onChange={handleDateChange}
+            max={new Date().toISOString().split('T')[0]}
+            className="w-full bg-white/10 text-white placeholder:text-white/70 border-white/20 h-[52px] rounded-xl px-4 
+              [color-scheme:dark] 
+              focus:ring-white/30 focus:border-white/30
+              [&::-webkit-calendar-picker-indicator]:opacity-0 
+              [&::-webkit-calendar-picker-indicator]:absolute 
+              [&::-webkit-calendar-picker-indicator]:inset-0
+              [&::-webkit-calendar-picker-indicator]:w-full
+              [&::-webkit-calendar-picker-indicator]:h-full
+              [&::-webkit-calendar-picker-indicator]:cursor-pointer
+              [&::-webkit-datetime-edit-fields-wrapper]:p-0
+              [&::-webkit-date-and-time-value]:text-white
+              text-base sm:text-lg"
+            aria-label="Birth Date"
+            aria-describedby="birthdate-description"
+            aria-required="true"
+            inputMode="numeric"
+            pattern="\d{4}-\d{2}-\d{2}"
+            placeholder="Select your birth date"
+          />
+          <div className="pointer-events-none absolute right-4 top-1/2 transform -translate-y-1/2">
+            <svg 
+              width="20" 
+              height="20" 
+              viewBox="0 0 20 20" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              className="text-white opacity-70"
+            >
+              <path 
+                d="M6 9l4 4 4-4" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+        </div>
       </div>
 
       <Button
