@@ -53,15 +53,15 @@ export function ShareDialog({ isOpen, onClose, stats }: ShareDialogProps) {
           
           <div className="space-y-4">
             <div className="flex justify-center space-x-4">
-              <FacebookShareButton url={shareUrl} quote={title}>
+              <FacebookShareButton url={shareUrl}>
                 <FacebookIcon size={32} round />
               </FacebookShareButton>
               
-              <TwitterShareButton url={shareUrl} title={title}>
+              <TwitterShareButton url={shareUrl}>
                 <TwitterIcon size={32} round />
               </TwitterShareButton>
               
-              <WhatsappShareButton url={shareUrl} title={title}>
+              <WhatsappShareButton url={shareUrl}>
                 <WhatsappIcon size={32} round />
               </WhatsappShareButton>
             </div>
