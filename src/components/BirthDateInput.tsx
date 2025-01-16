@@ -72,7 +72,12 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
           value={dateString}
           onChange={handleDateChange}
           max={new Date().toISOString().split('T')[0]}
-          className="w-full bg-white/10 text-white placeholder:text-white/70 border-white/20 h-12 sm:h-10 text-lg sm:text-base rounded-xl"
+          className="w-full bg-white/10 text-white placeholder:text-white/70 border-white/20 h-[44px] rounded-xl px-4 
+            [color-scheme:dark] 
+            focus:ring-white/30 focus:border-white/30
+            [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert
+            [&::-webkit-datetime-edit-fields-wrapper]:p-0
+            [&::-webkit-date-and-time-value]:text-white"
           aria-label="Birth Date"
           aria-describedby="birthdate-description"
           aria-required="true"
@@ -111,7 +116,12 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
               id="birthtime"
               value={timeString}
               onChange={handleTimeChange}
-              className="w-full bg-white/10 text-white border-white/20 h-12 sm:h-10 text-lg sm:text-base rounded-xl"
+              className="w-full bg-white/10 text-white border-white/20 h-[44px] rounded-xl px-4
+                [color-scheme:dark]
+                focus:ring-white/30 focus:border-white/30
+                [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:invert
+                [&::-webkit-datetime-edit-fields-wrapper]:p-0
+                [&::-webkit-time-value]:text-white"
             />
           </div>
 
