@@ -17,7 +17,6 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
   const [timeString, setTimeString] = useState('');
   const [timeZone, setTimeZone] = useState<string>('');
   
-  // Get list of available timezones
   const timeZones = Intl.supportedValuesOf('timeZone');
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +42,6 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
 
     let birthDate = new Date(date);
     
-    // If time is provided, set it
     if (time) {
       const [hours, minutes] = time.split(':').map(Number);
       birthDate.setHours(hours, minutes);
@@ -75,6 +73,11 @@ export function BirthDateInput({ onBirthInfoChange }: BirthDateInputProps) {
           onChange={handleDateChange}
           max={new Date().toISOString().split('T')[0]}
           className="w-full bg-white/10 text-white placeholder:text-white/70 border-white/20 h-12 sm:h-10 text-lg sm:text-base rounded-xl"
+          aria-label="Birth Date"
+          aria-describedby="birthdate-description"
+          aria-required="true"
+          inputMode="numeric"
+          pattern="\d{4}-\d{2}-\d{2}"
         />
       </div>
 
